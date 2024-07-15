@@ -1,6 +1,7 @@
 package data
 
 import domain.Country
+import domain.FullCountry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -24,7 +25,7 @@ class CountriesRepositoryImpl(
         }
     }
 
-    override suspend fun getCountryByName(name: String): Result<Country> {
+    override suspend fun getCountryByName(name: String): Result<FullCountry> {
         return withContext(Dispatchers.IO) {
             try {
                 val result = countriesRemoteDataSource.getCountryByName(name)

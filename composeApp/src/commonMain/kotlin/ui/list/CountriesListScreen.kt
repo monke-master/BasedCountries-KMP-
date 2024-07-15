@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +36,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.alexgladkov.odyssey.compose.extensions.push
 import ru.alexgladkov.odyssey.compose.local.LocalRootController
 import ui.LoadingPlaceholder
+import ui.ShimmerImage
 import ui.ShimmerPlaceholder
 
 @Composable
@@ -91,7 +91,7 @@ private fun ErrorState(error: Throwable) {
 private fun IdleState() {}
 
 @Composable
-fun CountriesList(
+private fun CountriesList(
     list: List<Country>,
     event: (CountriesListEvent) -> Unit
 ) {
@@ -117,23 +117,13 @@ private fun CountryItem(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.clickable { onClicked(country) }
     ) {
-        SubcomposeAsyncImage(
-            modifier = Modifier
-                .width(56.dp)
+        ShimmerImage(
+            modifier = Modifier.width(56.dp)
                 .border(
                     BorderStroke(1.dp, Color.Black),
                     RectangleShape
                 ),
-            model = ImageRequest.Builder(LocalPlatformContext.current)
-                .data(country.flag)
-                .crossfade(true)
-                .decoderFactory(SvgDecoder.Factory())
-                .build(),
-            loading = {
-               ShimmerPlaceholder(modifier = Modifier.size(48.dp))
-            },
-            contentDescription = null,
-            contentScale = ContentScale.Fit
+            source = country.flag
         )
         Text(text = country.name)
     }

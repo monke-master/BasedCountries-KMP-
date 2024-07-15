@@ -1,6 +1,7 @@
 package ui.country
 
 import domain.Country
+import domain.FullCountry
 
 sealed class CountryEvent {
     data class LoadData(
@@ -20,7 +21,7 @@ sealed class CountryState {
     ): CountryState()
 
     data class Success(
-        val country: Country
+        val country: FullCountry
     ): CountryState()
 
     data object Idle: CountryState()
