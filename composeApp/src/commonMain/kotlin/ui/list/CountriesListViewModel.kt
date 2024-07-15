@@ -1,4 +1,4 @@
-package ui
+package ui.list
 
 import com.adeo.kviewmodel.BaseSharedViewModel
 import domain.GetCountriesUseCase
@@ -7,7 +7,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class CountriesListViewModel: BaseSharedViewModel<CountriesListState, CountriesListAction, CountriesListEvent>(
-        CountriesListState.Idle
+    CountriesListState.Idle
 ), KoinComponent {
 
     private val getCountriesUseCase: GetCountriesUseCase by inject()
@@ -15,6 +15,10 @@ class CountriesListViewModel: BaseSharedViewModel<CountriesListState, CountriesL
     override fun obtainEvent(viewEvent: CountriesListEvent) {
         when (viewEvent) {
             CountriesListEvent.LoadData -> loadData()
+            is CountriesListEvent.CountryClicked -> {
+                viewAction = CountriesListAction.OnCountryClicked(viewEvent.country.name)
+            }
+            is CountriesListEvent.ActionInvoked -> viewAction = null
         }
     }
 

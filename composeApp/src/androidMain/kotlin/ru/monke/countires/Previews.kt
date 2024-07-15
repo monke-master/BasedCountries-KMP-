@@ -2,7 +2,7 @@ package ru.monke.countires
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import ui.CountriesListPreview
+import ui.list.CountriesListPreview
 
 @Composable
 @Preview

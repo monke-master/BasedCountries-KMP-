@@ -20,6 +20,8 @@ logging = "1.5.0"
 kviewmodel = "0.14"
 koinVersion = "3.3.2"
 coil3 = "3.0.0-alpha06"
+navigationCompose = "2.7.0-alpha07"
+odysseyCore = "1.3.61"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -52,6 +54,7 @@ logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
 
 kviewmodel-core = { module = "com.adeo:kviewmodel", version.ref = "kviewmodel" }
 kviewmodel-compose = { module = "com.adeo:kviewmodel-compose", version.ref = "kviewmodel" }
+kviewmodel-odyssey = { module = "com.adeo:kviewmodel-odyssey", version.ref = "kviewmodel" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinVersion" }
 
@@ -60,12 +63,16 @@ coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil3" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil3" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+odyssey-compose = { module = "io.github.alexgladkov:odyssey-compose", version.ref = "odysseyCore" }
+odyssey-core = { module = "io.github.alexgladkov:odyssey-core", version.ref = "odysseyCore" }
 
 [bundles]
 ktor-common = ["ktor-client-core", "ktor-serialization-kotlinx-json", "ktor-client-json",
     "ktor-client-serialization", "ktor-client-content-negotiation", "ktor-client-logging"]
-kviewmodel = ["kviewmodel-compose", "kviewmodel-core"]
+kviewmodel = ["kviewmodel-compose", "kviewmodel-core", "kviewmodel-odyssey"]
 coil = ["coil", "coil-compose", "coil-compose-core", "coil-svg", "coil-network-ktor"]
+odyssey = ["odyssey-compose", "odyssey-core"]
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

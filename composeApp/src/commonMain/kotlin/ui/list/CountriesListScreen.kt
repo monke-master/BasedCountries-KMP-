@@ -1,13 +1,13 @@
-package ui
+package ui.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,40 +18,60 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
-import com.adeo.kviewmodel.compose.ViewModel
+import com.adeo.kviewmodel.compose.observeAsState
+import com.adeo.kviewmodel.odyssey.StoredViewModel
+import com.adeo.kviewmodel.odyssey.setupWithViewModels
 import domain.Country
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ru.alexgladkov.odyssey.compose.extensions.push
+import ru.alexgladkov.odyssey.compose.local.LocalRootController
+import ui.LoadingPlaceholder
+import ui.ShimmerPlaceholder
 
 @Composable
 fun CountriesListScreen() {
+    val rootController = LocalRootController.current
+    rootController.setupWithViewModels()
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
-        ViewModel(factory = { CountriesListViewModel() }) { viewModel ->
+        StoredViewModel(factory = { CountriesListViewModel() }) { viewModel ->
             LaunchedEffect(Unit) {
                 viewModel.obtainEvent(CountriesListEvent.LoadData)
             }
 
-            val viewState = viewModel.viewStates().collectAsState()
+            val viewState = viewModel.viewStates().observeAsState()
+            val viewAction = viewModel.viewActions().observeAsState()
+
+            viewAction.value?.let { action ->
+                when (action) {
+                    is CountriesListAction.OnCountryClicked -> {
+                        rootController.push("country", params = action.name)
+                        viewModel.obtainEvent(CountriesListEvent.ActionInvoked)
+                    }
+                }
+            }
 
             when (val state = viewState.value) {
                 is CountriesListState.Error -> ErrorState(state.error)
                 CountriesListState.Idle -> IdleState()
-                CountriesListState.Loading -> LoadingState()
-                is CountriesListState.Success -> CountriesList(state.data)
+                CountriesListState.Loading -> LoadingPlaceholder(Modifier.fillMaxSize())
+                is CountriesListState.Success -> CountriesList(
+                    list = state.data,
+                    event = viewModel::obtainEvent
+                )
             }
         }
     }
@@ -71,38 +91,31 @@ private fun ErrorState(error: Throwable) {
 private fun IdleState() {}
 
 @Composable
-private fun LoadingState() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
-@Composable
 fun CountriesList(
-    list: List<Country>
+    list: List<Country>,
+    event: (CountriesListEvent) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(list) {
-            CountryItem(it)
+            CountryItem(it) { country ->
+                event.invoke(CountriesListEvent.CountryClicked(country))
+            }
         }
     }
 }
 
 @Composable
 private fun CountryItem(
-    country: Country
+    country: Country,
+    onClicked: (Country) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.clickable { onClicked(country) }
     ) {
         SubcomposeAsyncImage(
             modifier = Modifier
@@ -135,7 +148,8 @@ fun CountriesListPreview() {
         CountriesList(
             list = listOf(
                 Country(name = "Russia", flag = "Not found")
-            )
+            ),
+            event = {}
         )
     }
 }

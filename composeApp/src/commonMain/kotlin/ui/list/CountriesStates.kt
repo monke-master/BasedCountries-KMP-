@@ -1,9 +1,15 @@
-package ui
+package ui.list
 
 import domain.Country
 
 sealed class CountriesListEvent {
     data object LoadData: CountriesListEvent()
+
+    data class CountryClicked(
+        val country: Country
+    ): CountriesListEvent()
+
+    data object ActionInvoked: CountriesListEvent()
 }
 
 sealed class CountriesListAction {

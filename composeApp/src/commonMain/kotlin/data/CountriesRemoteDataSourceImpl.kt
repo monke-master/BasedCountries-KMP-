@@ -1,5 +1,6 @@
 package data
 
+import domain.Country
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.DefaultRequest
@@ -17,6 +18,11 @@ class CountriesRemoteDataSourceImpl: CountriesRemoteDataSource {
     override suspend fun getCountries(): List<CountryRemote> {
         val request = GetCountiesRequestBuilder().build()
         return httpClient.get(request).body<List<CountryRemote>>()
+    }
+
+    override suspend fun getCountryByName(name: String): CountryRemote {
+        val request = GetCountryByNameRequestBuilder().build(name)
+        return httpClient.get(request).body<List<CountryRemote>>()[0]
     }
 
     private val httpClient = HttpClient {

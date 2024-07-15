@@ -23,4 +23,16 @@ class CountriesRepositoryImpl(
             }
         }
     }
+
+    override suspend fun getCountryByName(name: String): Result<Country> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result = countriesRemoteDataSource.getCountryByName(name)
+                return@withContext Result.success(result.toDomain())
+            } catch (error: Exception) {
+                log.d(tag = TAG) { error.message }
+                return@withContext Result.failure(error)
+            }
+        }
+    }
 }

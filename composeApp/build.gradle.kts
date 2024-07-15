@@ -46,6 +46,8 @@ kotlin {
             implementation(libs.bundles.kviewmodel)
             implementation(libs.koin.core)
             implementation(libs.bundles.coil)
+
+            implementation(libs.bundles.odyssey)
         }
         androidMain.dependencies {
             implementation(compose.preview)

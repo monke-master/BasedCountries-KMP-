@@ -5,6 +5,7 @@ import data.CountriesRemoteDataSourceImpl
 import data.CountriesRepository
 import data.CountriesRepositoryImpl
 import domain.GetCountriesUseCase
+import domain.GetCountryByNameUseCase
 import org.koin.dsl.module
 
 private val dataModule = module {
@@ -20,6 +21,9 @@ private val dataModule = module {
 private val domainModule = module {
     single<GetCountriesUseCase> {
         GetCountriesUseCase(get())
+    }
+    single<GetCountryByNameUseCase> {
+        GetCountryByNameUseCase(get())
     }
 }
 
