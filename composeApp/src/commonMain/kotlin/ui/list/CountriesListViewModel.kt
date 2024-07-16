@@ -2,9 +2,11 @@ package ui.list
 
 import com.adeo.kviewmodel.BaseSharedViewModel
 import domain.GetCountriesUseCase
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import utils.log
 
 class CountriesListViewModel: BaseSharedViewModel<CountriesListState, CountriesListAction, CountriesListEvent>(
     CountriesListState.Idle

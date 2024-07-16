@@ -2,19 +2,19 @@ package data
 
 import domain.Country
 import domain.FullCountry
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import utils.log
 
 private const val TAG = "CountriesRepositoryImpl"
 
 class CountriesRepositoryImpl(
-    private val countriesRemoteDataSource: CountriesRemoteDataSource
+    private val countriesRemoteDataSource: CountriesRemoteDataSource,
+    private val dispatcher: CoroutineDispatcher
 ): CountriesRepository {
 
     override suspend fun getCountries(): Result<List<Country>> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 val result = countriesRemoteDataSource.getCountries()
                 return@withContext Result.success(result.map { it.toDomain() }.sortedBy { it.name })
@@ -26,7 +26,7 @@ class CountriesRepositoryImpl(
     }
 
     override suspend fun getCountryByName(name: String): Result<FullCountry> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 val result = countriesRemoteDataSource.getCountryByName(name)
                 return@withContext Result.success(result.toDomain())

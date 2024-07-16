@@ -10,18 +10,21 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 class CountriesRemoteDataSourceImpl: CountriesRemoteDataSource {
 
     override suspend fun getCountries(): List<CountryRemote> {
         val request = GetCountiesRequestBuilder().build()
-        return httpClient.get(request).body<List<CountryRemote>>()
+        val response = httpClient.get(request).body<String>()
+        return Json.decodeFromString(ListSerializer(CountrySerializer()), response)
     }
 
     override suspend fun getCountryByName(name: String): FullCountryRemote {
         val request = GetCountryByNameRequestBuilder().build(name)
-        return httpClient.get(request).body<List<FullCountryRemote>>()[0]
+        val response = httpClient.get(request).body<String>()
+        return Json.decodeFromString(ListSerializer(FullCountrySerializer()), response)[0]
     }
 
     private val httpClient = HttpClient {

@@ -7,6 +7,7 @@ import data.CountriesRepositoryImpl
 import domain.GetCountriesUseCase
 import domain.GetCountryByNameUseCase
 import org.koin.dsl.module
+import utils.provideDispatcher
 
 private val dataModule = module {
     single<CountriesRemoteDataSource> {
@@ -14,7 +15,7 @@ private val dataModule = module {
     }
 
     single<CountriesRepository> {
-        CountriesRepositoryImpl(get())
+        CountriesRepositoryImpl(get(), provideDispatcher().io)
     }
 }
 

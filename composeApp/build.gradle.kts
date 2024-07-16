@@ -40,6 +40,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.bundles.ktor.common)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.serialization.core)
             implementation(libs.kotlinx.coroutines.core)
             api(libs.logging)
 
@@ -60,6 +61,7 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
     }
+    task("testClasses")
 }
 
 android {
